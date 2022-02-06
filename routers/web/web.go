@@ -1029,7 +1029,10 @@ func RegisterRoutes(m *web.Route) {
 
 	m.Group("/{username}", func() {
 		m.Group("/{reponame}", func() {
-			m.Get("", repo.SetEditorconfigIfExists, repo.Home)
+			// D4: default route from /code to /issues
+			// m.Get("", repo.SetEditorconfigIfExists, repo.Home)
+			m.Get("/code", repo.SetEditorconfigIfExists, repo.Home)
+			m.Get("", repo.SetEditorconfigIfExists, repo.Issues)
 		}, ignSignIn, context.RepoAssignment, context.RepoRef(), context.UnitTypes())
 
 		m.Group("/{reponame}", func() {

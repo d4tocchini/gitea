@@ -409,6 +409,10 @@ func Issues(ctx *context.Context) {
 
 	ctx.Data["CanWriteIssuesOrPulls"] = ctx.Repo.CanWriteIssuesOrPulls(isPullList)
 
+	// D4: ensure .Projects is always available in /issues
+	repo := ctx.Repo.Repository
+	retrieveProjects(ctx, repo)
+
 	ctx.HTML(http.StatusOK, tplIssues)
 }
 
@@ -831,6 +835,15 @@ func NewIssue(ctx *context.Context) {
 
 	RetrieveRepoMetas(ctx, ctx.Repo.Repository, false)
 	setTemplateIfExists(ctx, issueTemplateKey, context.IssueTemplateDirCandidates, IssueTemplateCandidates)
+
+	// D4 for new issue auto set project to OpenProjects[0]
+	projects := ctx.Data["OpenProjects"].([]*models.Project)
+	if projectID <= 0 && len(projects) > 0 {
+		ctx.Data["Project"] = projects[0]
+		ctx.Data["project_id"] = projects[0].ID
+	}
+	//
+
 	if ctx.Written() {
 		return
 	}

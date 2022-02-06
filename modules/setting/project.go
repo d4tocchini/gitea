@@ -9,9 +9,13 @@ import "code.gitea.io/gitea/modules/log"
 // Project settings
 var (
 	Project = struct {
+		// D4:
+		ProjectBoardSCRPYType []string
 		ProjectBoardBasicKanbanType []string
 		ProjectBoardBugTriageType   []string
 	}{
+		// D4:
+		ProjectBoardSCRPYType: []string{"Strategy", "Culture", "Resources", "Products", "Yield"},
 		ProjectBoardBasicKanbanType: []string{"To Do", "In Progress", "Done"},
 		ProjectBoardBugTriageType:   []string{"Needs Triage", "High Priority", "Low Priority", "Closed"},
 	}

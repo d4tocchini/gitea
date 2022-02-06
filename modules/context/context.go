@@ -19,6 +19,11 @@ import (
 	"strings"
 	"time"
 
+	// D4: inject ctx["MyOrgs"] in all pages
+	"code.gitea.io/gitea/models"
+	"code.gitea.io/gitea/models/db"
+	//
+
 	"code.gitea.io/gitea/models/unit"
 	user_model "code.gitea.io/gitea/models/user"
 	"code.gitea.io/gitea/modules/base"
@@ -589,6 +594,20 @@ func Auth(authMethod auth.Method) func(*Context) {
 			ctx.Data["SignedUserID"] = ctx.User.ID
 			ctx.Data["SignedUserName"] = ctx.User.Name
 			ctx.Data["IsAdmin"] = ctx.User.IsAdmin
+
+			// D4: inject ctx["MyOrgs"] in all pages
+			cnt, _ := models.GetOrganizationCount(db.DefaultContext, ctx.User)
+			ctx.Data["MyOrgsCount"] = cnt
+			orgs, err := models.GetUserOrgsList(ctx.User)
+			if err == nil {
+				ctx.Data["MyOrgs"] = orgs
+			}
+			// if err != nil {
+			// 	ctx.ServerError("GetUserOrgsList", err)
+			// 	return nil
+			// }
+			//
+
 		} else {
 			ctx.Data["SignedUserID"] = int64(0)
 			ctx.Data["SignedUserName"] = ""

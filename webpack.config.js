@@ -80,11 +80,11 @@ export default {
     },
   },
   optimization: {
-    minimize: isProduction,
+    minimize: false,// D4 isProduction,
     minimizer: [
       new ESBuildMinifyPlugin({
         target: 'es2015',
-        minify: true,
+        minify: false,// D4
         css: true,
         legalComments: 'none',
       }),

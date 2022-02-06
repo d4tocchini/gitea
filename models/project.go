@@ -64,6 +64,7 @@ func init() {
 func GetProjectsConfig() []ProjectsConfig {
 	return []ProjectsConfig{
 		{ProjectBoardTypeNone, "repo.projects.type.none"},
+		{ProjectBoardTypeSCRPY, "repo.projects.type.scrpy"}, // D4:
 		{ProjectBoardTypeBasicKanban, "repo.projects.type.basic_kanban"},
 		{ProjectBoardTypeBugTriage, "repo.projects.type.bug_triage"},
 	}

@@ -271,7 +271,28 @@ func EditProjectPost(ctx *context.Context) {
 
 // ViewProject renders the project board for a project
 func ViewProject(ctx *context.Context) {
-	project, err := models.GetProjectByID(ctx.ParamsInt64(":id"))
+	// D4:
+	// project, err := models.GetProjectByID(ctx.ParamsInt64(":id"))
+	id := ctx.ParamsInt64(":id")
+	if id <= 0 {
+		repo := ctx.Repo.Repository
+		projects, count, err := models.GetProjects(models.ProjectSearchOptions{
+			RepoID:   repo.ID,
+			Page:     1,
+			IsClosed: util.OptionalBoolOf(false),
+			SortType: "oldest",
+			Type:     models.ProjectTypeRepository,
+		})
+		if err != nil {
+			ctx.ServerError("GetProjects", err)
+			return
+		}
+		if count > 0 {
+			id = projects[0].ID
+		}
+	}
+	// D4: TODO, reuse if above project?
+	project, err := models.GetProjectByID(id)
 	if err != nil {
 		if models.IsErrProjectNotExist(err) {
 			ctx.NotFound("", nil)

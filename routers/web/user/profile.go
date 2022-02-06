@@ -257,17 +257,6 @@ func Profile(ctx *context.Context) {
 		ctx.Data["Cards"] = items
 
 		total = ctxUser.NumFollowing
-	case "activity":
-		ctx.Data["Feeds"] = feed.RetrieveFeeds(ctx, models.GetFeedsOptions{RequestedUser: ctxUser,
-			Actor:           ctx.User,
-			IncludePrivate:  showPrivate,
-			OnlyPerformedBy: true,
-			IncludeDeleted:  false,
-			Date:            ctx.FormString("date"),
-		})
-		if ctx.Written() {
-			return
-		}
 	case "stars":
 		ctx.Data["PageIsProfileStarList"] = true
 		repos, count, err = models.SearchRepository(&models.SearchRepoOptions{
@@ -321,7 +310,7 @@ func Profile(ctx *context.Context) {
 		}
 
 		total = int(count)
-	default:
+	case "repos":
 		repos, count, err = models.SearchRepository(&models.SearchRepoOptions{
 			ListOptions: db.ListOptions{
 				PageSize: setting.UI.User.RepoPagingNum,
@@ -342,6 +331,17 @@ func Profile(ctx *context.Context) {
 		}
 
 		total = int(count)
+	default:
+		ctx.Data["Feeds"] = feed.RetrieveFeeds(ctx, models.GetFeedsOptions{RequestedUser: ctxUser,
+			Actor:           ctx.User,
+			IncludePrivate:  showPrivate,
+			OnlyPerformedBy: true,
+			IncludeDeleted:  false,
+			Date:            ctx.FormString("date"),
+		})
+		if ctx.Written() {
+			return
+		}
 	}
 	ctx.Data["Repos"] = repos
 	ctx.Data["Total"] = total

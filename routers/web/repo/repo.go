@@ -189,6 +189,21 @@ func handleCreateError(ctx *context.Context, owner *user_model.User, err error, 
 	}
 }
 
+// D4: create default project <- didCreatePost  TODO: handle error?..
+func didCreatePost(ctx *context.Context, repo *repo_model.Repository) {
+	if err := models.NewProject(&models.Project{
+		RepoID:      repo.ID,
+		Title:       "SCRPY",
+		Description: "",
+		CreatorID:   ctx.User.ID,
+		BoardType:   models.ProjectBoardTypeSCRPY,
+		Type:        models.ProjectTypeRepository,
+	}); err != nil {
+		ctx.ServerError("NewProject", err)
+		return
+	}
+}
+
 // CreatePost response for creating repository
 func CreatePost(ctx *context.Context) {
 	form := web.GetForm(ctx).(*forms.CreateRepoForm)
@@ -246,6 +261,7 @@ func CreatePost(ctx *context.Context) {
 		repo, err = repo_service.GenerateRepository(ctx.User, ctxUser, templateRepo, opts)
 		if err == nil {
 			log.Trace("Repository generated [%d]: %s/%s", repo.ID, ctxUser.Name, repo.Name)
+			didCreatePost(ctx, repo)
 			ctx.Redirect(repo.Link())
 			return
 		}
@@ -265,6 +281,7 @@ func CreatePost(ctx *context.Context) {
 		})
 		if err == nil {
 			log.Trace("Repository created [%d]: %s/%s", repo.ID, ctxUser.Name, repo.Name)
+			didCreatePost(ctx, repo)
 			ctx.Redirect(repo.Link())
 			return
 		}

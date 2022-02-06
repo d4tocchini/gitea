@@ -27,6 +27,9 @@ const (
 	// ProjectBoardTypeNone is a project board type that has no predefined columns
 	ProjectBoardTypeNone ProjectBoardType = iota
 
+	// D4: ProjectBoardTypeSCRPY is a project board type that has basic predefined columns
+	ProjectBoardTypeSCRPY
+
 	// ProjectBoardTypeBasicKanban is a project board type that has basic predefined columns
 	ProjectBoardTypeBasicKanban
 
@@ -61,7 +64,8 @@ func init() {
 // IsProjectBoardTypeValid checks if the project board type is valid
 func IsProjectBoardTypeValid(p ProjectBoardType) bool {
 	switch p {
-	case ProjectBoardTypeNone, ProjectBoardTypeBasicKanban, ProjectBoardTypeBugTriage:
+		// D4:
+	case ProjectBoardTypeNone, ProjectBoardTypeSCRPY, ProjectBoardTypeBasicKanban, ProjectBoardTypeBugTriage:
 		return true
 	default:
 		return false
@@ -72,6 +76,10 @@ func createBoardsForProjectsType(sess db.Engine, project *Project) error {
 	var items []string
 
 	switch project.BoardType {
+
+	// D4:
+	case ProjectBoardTypeSCRPY:
+		items = setting.Project.ProjectBoardSCRPYType
 
 	case ProjectBoardTypeBugTriage:
 		items = setting.Project.ProjectBoardBugTriageType

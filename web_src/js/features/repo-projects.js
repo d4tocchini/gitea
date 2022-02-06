@@ -46,7 +46,10 @@ async function initRepoProjectSortable() {
         if (parseInt($(column).data('sorting')) !== i) {
           $.ajax({
             url: $(column).data('url'),
-            data: JSON.stringify({sorting: i, color: rgbToHex($(column).css('backgroundColor'))}),
+            data: JSON.stringify({
+              sorting: i,
+              color: rgbToHex($(column).css('backgroundColor'))
+            }),
             headers: {
               'X-Csrf-Token': csrfToken,
             },
@@ -97,7 +100,10 @@ export default function initRepoProject() {
 
         $.ajax({
           url: $(this).data('url'),
-          data: JSON.stringify({title: projectTitleInput.val(), color: projectColorInput.val()}),
+          data: JSON.stringify({
+            title: projectTitleInput.val(),
+            color: projectColorInput.val()
+          }),
           headers: {
             'X-Csrf-Token': csrfToken,
           },
@@ -191,6 +197,7 @@ function getRelativeColor(color) {
 
 function rgbToHex(rgb) {
   rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  if (!rgb) return '';
   return `#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`;
 }
 
