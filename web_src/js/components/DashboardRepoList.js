@@ -314,6 +314,9 @@ function initVueComponents() {
         $.getJSON(searchedURL, (result, _textStatus, request) => {
           if (searchedURL === this.searchURL) {
             this.repos = result.data;
+            this.repos.forEach(function (repo) {
+              repo.html_url = `/${repo.html_url.split('/').slice(3).join('/')}`;
+            })
             const count = request.getResponseHeader('X-Total-Count');
             if (searchedQuery === '' && searchedMode === '' && this.archivedFilter === 'both') {
               this.reposTotalCount = count;
